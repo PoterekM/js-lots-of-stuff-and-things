@@ -268,3 +268,68 @@ gulp.task("minifyScripts", ["jsBrowserify"], function(){
 ````
 $ gulp minifyScripts
 ````
+
+## Step build/teardown "minification"
+````
+gulp.task("build", function(){
+  if (buildProduction) {
+    gulp.start('minifyScripts');
+  } else {
+    gulp.start('jsBrowserify');
+  }
+});
+````
+
+##### Managing Environmental Variables with gulp-util
+````
+$ npm install gulp-util --save-dev
+````
+````
+** add to gulpfile***
+var utilities = require('gulp-util');
+````
+````
+*add this to gulpfile again
+var buildProduction = utilities.env.production;
+````
+````
+$ gulp build --production
+The presence of the --production flag sets our environment variable to true. If we want to make a development build, we would just leave it out and would run this: $gulp build
+````
+
+###### Clean Clean
+````
+The next thing that we're going to need is a task to clean up our environment before we make a build. We want to make sure that we are using up-to-date versions of our files every time that we build. To this end, we need a way to delete files using gulp
+````
+````
+* $ npm install del --save-dev
+*  gulp.task("clean", function(){
+  return del(['build', 'tmp']);
+* gulp.task("build", ['clean'], function(){
+  if (buildProduction) {
+    gulp.start('minifyScripts');
+  } else {
+    gulp.start('jsBrowserify');
+  }
+});
+});
+
+
+## JS Linter
+````
+$ npm install jshint --save-dev
+$ npm install gulp-jshint --save-dev
+````
+````
+var jshint = require('gulp-jshint');
+
+gulp.task('jshint', function(){
+  return gulp.src(['js/*.js'])
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
+});
+````
+````
+$ gulp jshint
+//// show all errors in javascript files
+````
